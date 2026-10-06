@@ -1,6 +1,3 @@
-/*
- * Copyright (c) 2026. Arquitectura de Sistemas, DISC, UCN, Antofagasta.
- */
 package cl.ucn.disc.arqsist.library.dao;
 
 import com.j256.ormlite.dao.Dao;
@@ -8,27 +5,21 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.support.ConnectionSource;
 
-import cl.ucn.disc.arqsist.library.model.Book;
-
 import java.sql.SQLException;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-
 public abstract class BaseDao<T> {
 
-    protected final Dao<T, Integer> dao;
+    protected Dao<T, Integer> dao;
 
-  
-    protected BaseDao(ConnectionSource connectionSource, Class<T> clazz) {
+    public BaseDao(ConnectionSource connectionSource, Class<T> clazz) {
         try {
             this.dao = DaoManager.createDao(connectionSource, clazz);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
-
-    
 
     public List<T> findAll() {
         try {
@@ -38,7 +29,6 @@ public abstract class BaseDao<T> {
         }
     }
 
- 
     public T findById(int id) {
         try {
             return dao.queryForId(id);
@@ -47,28 +37,25 @@ public abstract class BaseDao<T> {
         }
     }
 
-    
-    public void create(T entity) {
+    public int create(T entity) {
         try {
-            dao.create(entity);
+            return dao.create(entity);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-  
-    public void update(T entity) {
+    public int update(T entity) {
         try {
-            dao.update(entity);
+            return dao.update(entity);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-
-    public void delete(T entity) {
+    public int delete(T entity) {
         try {
-            dao.delete(entity);
+            return dao.delete(entity);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
