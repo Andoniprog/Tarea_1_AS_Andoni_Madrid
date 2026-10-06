@@ -1,7 +1,11 @@
 package cl.ucn.disc.arqsist.library.model;
 
+import java.time.LocalDate;
+
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+
+import cl.ucn.disc.arqsist.library.db.LocalDatePersister;
 
 @DatabaseTable(tableName = "reservations")
 public final class Reservation {
@@ -15,8 +19,8 @@ public final class Reservation {
     @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true)
     private Book book;
 
-    @DatabaseField(canBeNull = false)
-    private String reservedAt;
+    @DatabaseField(canBeNull = false, persisterClass = LocalDatePersister.class)
+    private LocalDate reservedAt;
 
     @DatabaseField
     private boolean fulfilled;
@@ -24,7 +28,7 @@ public final class Reservation {
     public Reservation() {
     }
 
-    public Reservation(Member member, Book book, String reservedAt) {
+    public Reservation(Member member, Book book, LocalDate reservedAt) {
         this.member = member;
         this.book = book;
         this.reservedAt = reservedAt;
