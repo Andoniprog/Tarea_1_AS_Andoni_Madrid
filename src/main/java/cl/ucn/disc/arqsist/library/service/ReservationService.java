@@ -50,7 +50,7 @@ public final class ReservationService {
         reservationDao.update(reservation);
 
         LocalDate today = LocalDate.now();
-        Loan loan = new Loan(reservation.getMember(), reservation.getBook(), today, LoanPolicy.dueDate(today))
+        Loan loan = new Loan(reservation.getMember(), reservation.getBook(), today, LoanPolicy.dueDate(today));
         loanDao.create(loan);
         return loan;
     }

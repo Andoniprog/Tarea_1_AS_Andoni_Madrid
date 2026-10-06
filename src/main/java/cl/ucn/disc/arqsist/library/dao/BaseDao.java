@@ -28,11 +28,7 @@ public abstract class BaseDao<T> {
         }
     }
 
-  
-    public BaseDao(ConnectionSource connectionSource, Class<Book> class1) {
-        //TODO Auto-generated constructor stub
-    }
-
+    
 
     public List<T> findAll() {
         try {

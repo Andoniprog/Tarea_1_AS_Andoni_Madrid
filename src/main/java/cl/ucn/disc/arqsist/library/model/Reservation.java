@@ -59,11 +59,11 @@ public final class Reservation {
         this.book = book;
     }
 
-    public String getReservedAt() {
-        return reservedAt;
+    public LocalDate getReservedAt() {
+        return this.reservedAt;
     }
 
-    public void setReservedAt(String reservedAt) {
+    public void setReservedAt(LocalDate reservedAt) {
         this.reservedAt = reservedAt;
     }
 
