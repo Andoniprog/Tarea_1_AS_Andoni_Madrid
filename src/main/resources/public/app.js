@@ -150,7 +150,7 @@ class LibraryApp {
                     <td>${esc(l.dueDate)}</td>
                     <td>${l.returned
                         ? '<span class="tag is-success is-light">Returned</span>'
-                        : l.overdue
+                        : isOverdue(l)
                             ? '<span class="tag is-danger is-light">Overdue</span>'
                             : '<span class="tag is-warning is-light">On loan</span>'}</td>
                     <td>${l.overdueFee > 0
@@ -194,7 +194,7 @@ class LibraryApp {
         document.getElementById('stat-books').textContent = this.books.length;
         document.getElementById('stat-members').textContent = this.members.length;
         document.getElementById('stat-loans').textContent = this.loans.filter((l) => !l.returned).length;
-        document.getElementById('stat-overdue').textContent = this.loans.filter((l) => l.overdue).length;
+        document.getElementById('stat-overdue').textContent = this.loans.filter((l) => isOverdue(l)).length;
     }
 
     emptyRow(colspan, message) {
