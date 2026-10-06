@@ -52,6 +52,17 @@ package "controller" <<controller>> {
 }
 
 package "service" <<service>> {
+
+    class LoanPolicy {
+    + {static} int DUE_DAYS = 21
+    + {static} double FEE_PER_DAY = 1.0
+    - LoanPolicy()
+    + {static} dueDate(LocalDate) : LocalDate
+  }
+
+  class NotFoundException {
+    + NotFoundException(String)
+  }
   class BookService {
     - BookDao dao
     + listAll() : List<Book>
@@ -91,37 +102,30 @@ package "service" <<service>> {
 }
 
 package "dao" <<dao>> {
+    class BaseDao<T> {
+    # Dao<T, Integer> dao
+    + findAll() : List<T>
+    + findById(int) : T
+    + create(T) : int
+    + update(T) : int
+    + delete(T) : int
+    + transaction(Callable<R>) : R
+  }
+
   class BookDao {
-    - Dao<Book, Integer> dao
-    + findAll() : List<Book>
-    + findById(int) : Book
-    + create(Book) : void
-    + update(Book) : void
-    + delete(Book) : void
+    + BookDao(ConnectionSource)
   }
 
   class MemberDao {
-    - Dao<Member, Integer> dao
-    + findAll() : List<Member>
-    + findById(int) : Member
-    + create(Member) : void
-    + update(Member) : void
+    + MemberDao(ConnectionSource)
   }
 
   class LoanDao {
-    - Dao<Loan, Integer> dao
-    + findAll() : List<Loan>
-    + findById(int) : Loan
-    + create(Loan) : void
-    + update(Loan) : void
+    + LoanDao(ConnectionSource)
   }
 
   class ReservationDao {
-    - Dao<Reservation, Integer> dao
-    + findAll() : List<Reservation>
-    + findById(int) : Reservation
-    + create(Reservation) : void
-    + update(Reservation) : void
+    + ReservationDao(ConnectionSource)
   }
 }
 
@@ -214,6 +218,17 @@ package "model" <<model>> {
 }
 
 package "db" <<db>> {
+
+  class LocalDatePersister {
+    - {static} LocalDatePersister SINGLETON
+    - LocalDatePersister()
+    + {static} getSingleton() : LocalDatePersister
+    + parseDefaultString(FieldType, String) : Object
+    + resultToSqlArg(FieldType, DatabaseResults, int) : Object
+    + sqlArgToJava(FieldType, Object, int) : Object
+    + javaToSqlArg(FieldType, Object) : Object
+  }
+
   class Database {
     - ConnectionSource connectionSource
     + connectionSource() : ConnectionSource
@@ -240,6 +255,21 @@ ReservationService "1" --> "1" ReservationDao
 ReservationService "1" --> "1" BookDao
 ReservationService "1" --> "1" MemberDao
 ReservationService "1" --> "1" LoanDao
+
+' ----- inheritance -----
+NotFoundException --|> RuntimeException
+BookDao --|> BaseDao
+MemberDao --|> BaseDao
+LoanDao --|> BaseDao
+ReservationDao --|> BaseDao
+
+' ----- policy / persister -----
+MemberService ..> LoanPolicy
+ReservationService ..> LoanPolicy
+BookService ..> NotFoundException
+Loan ..> LocalDatePersister
+Reservation ..> LocalDatePersister
+
 
 ' ----- dao -> model / db -----
 BookDao "1" --> "0..*" Book
